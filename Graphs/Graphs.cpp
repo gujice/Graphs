@@ -5,7 +5,7 @@ int main()
 	Digraph d;
 
 	int V[6] = { 0, 1, 2, 3, 4, 5 };
-	int E[9] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	int E[9] = { 1, 2, 13, 14, 21, 24, 34, 35, 45 };
 
 	d.AddVertices(V, 6);
 	d.AddEdges(E, 9);

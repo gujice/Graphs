@@ -47,4 +47,11 @@ public:
 	void AddEdges(int* pEdges, int count);
 
 	bool DoMaxFlowMinCut();
+
+private:
+
+	void BuildPlusNeighborsMap();
+
+	std::map<int, std::vector<int>> mpPlusNeighbors;
+
 };

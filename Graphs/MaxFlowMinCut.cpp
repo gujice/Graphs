@@ -18,51 +18,70 @@ void Digraph::AddEdges(int* pEdges, int count)
 
 bool Digraph::DoMaxFlowMinCut()
 {
-	int j = 0;
-	int k = 1; // counter for edges
+	std::set<int> setVVisited;
+	int v = nQ;
+	bool bSReached = false;
+	bool bNoNext = false;
+
 	int c = INT_MAX;
-	int vk = 0;
-	int u = 0;
 
-	std::set<int> Q = { nQ };
-	std::set<int> W = {};
-	std::set<int> X = {};
-	std::vector<int> Es = vcEdges;
+	printf("%d\n", v);
 
-	while (Q.size() > 0 && Q.find(nS) == Q.end())
+	// create neightbours list
+	BuildPlusNeighborsMap();
+
+	while (!bSReached && !bNoNext)
 	{
-		for (;j < vcVertices.size(); j++)
+		if (mpPlusNeighbors.find(v) != mpPlusNeighbors.end())
 		{
-			for (auto ei : Es)
+			for (auto it = mpPlusNeighbors[v].begin(); it != mpPlusNeighbors[v].end(); it++)
 			{
-				Edge& e = mpDelta[ei];
-
-				if (e.nVFrom == vcVertices[j] &&
-					(X.find(e.nVTo) == X.end() && Q.find(e.nVTo) == Q.end()) &&
-					(e.nC - e.nF) > 0)
+				Edge& e = mpDelta[*it];
+				if (e.nVTo == nS)
 				{
-					W.insert(ei);
-					c = std::min(e.nC - e.nF, c);
-					vk = e.nVTo; // vk = u;
-					Q.insert(e.nVTo);
-					k++;
-				}
-				else if (e.nVTo == vcVertices[j] &&
-					(X.find(e.nVFrom) == X.end() && Q.find(e.nVFrom) == Q.end()) &&
-					e.nF > 0)
-				{
-					W.insert(ei);
-					c = std::min(e.nF, c);
-					vk = e.nVFrom; // vk = u;
-					Q.insert(e.nVFrom);
-					k++;
+					bSReached = true;
 				}
 
+				// capacity 
+				if (e.nC < c)
+					c = e.nC;
+
+				// next vertix
+				v = e.nVTo;
+
+				printf("%d\n", v);
+				break;
 			}
 		}
-
-		printf("Capacity: %d, %d", c, W.size());
+		else
+			bNoNext = false;
 	}
 
+	printf("Capacity %d\n", c);
+
 	return true;
+}
+
+void Digraph::BuildPlusNeighborsMap()
+{
+	for (auto itv = vcVertices.begin(); itv != vcVertices.end(); itv++)
+	{
+		int v = *itv;
+		for (auto ite = vcEdges.begin(); ite != vcEdges.end(); ite++)
+		{
+			int ei = *ite;
+
+			// must exists
+			auto fe = mpDelta.find(ei);
+			if (fe != mpDelta.end())
+			{
+				Edge& e = fe->second;
+				if (e.nVFrom == v)
+				{
+					// mpPlusNeighbors[v].push_back(e.nVTo);
+					mpPlusNeighbors[v].push_back(ei);
+				}
+			}
+		}
+	}
 }
