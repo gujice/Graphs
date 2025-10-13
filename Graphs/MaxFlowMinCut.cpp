@@ -22,48 +22,76 @@ bool Digraph::DoMaxFlowMinCut()
 	int v = nQ;
 	bool bSReached = false;
 	bool bNoNext = false;
+	std::vector<Edge> vcW;
 
 	int c = INT_MAX;
 
-	printf("%d\n", v);
-
-	// create neightbours list
-	BuildPlusNeighborsMap();
-
-	while (!bSReached && !bNoNext)
+	for (int i = 0; i < 2; i++)
 	{
-		if (mpPlusNeighbors.find(v) != mpPlusNeighbors.end())
+		bSReached = false;
+		bNoNext = false;
+		v = nQ;
+
+		printf("%d\n", v);
+
+		// create neightbours list
+		BuildPlusNeighborsMap();
+
+		while (!bSReached && !bNoNext)
 		{
-			for (auto it = mpPlusNeighbors[v].begin(); it != mpPlusNeighbors[v].end(); it++)
+			if (mpPlusNeighbors.find(v) != mpPlusNeighbors.end())
 			{
-				Edge& e = mpDelta[*it];
-				if (e.nVTo == nS)
+				for (auto it = mpPlusNeighbors[v].begin(); it != mpPlusNeighbors[v].end(); it++)
 				{
-					bSReached = true;
+					Edge& e = mpDelta[*it];
+					if (e.nVTo == nS)
+					{
+						bSReached = true;
+					}
+
+					// capacity 
+					if (e.nC < c)
+						c = e.nC;
+
+					// next vertix
+					v = e.nVTo;
+					vcW.push_back(e);
+
+					printf("%d\n", v);
+					break;
 				}
+			}
+			else
+				bNoNext = false;
+		}
 
-				// capacity 
-				if (e.nC < c)
-					c = e.nC;
+		printf("\nCapacity %d\n", c);
+		for (auto& e : vcW)
+		{
+			printf("%d-%d ", e.nVFrom, e.nVTo);
 
-				// next vertix
-				v = e.nVTo;
+			if (c - e.nC > 0)
+			{
+				e.nC = c - e.nC;
+			}
+			else
+			{
+				e.nC = c;
 
-				printf("%d\n", v);
-				break;
+				int fromto = e.nVFrom;
+				e.nVFrom = e.nVTo;
+				e.nVTo = fromto;
 			}
 		}
-		else
-			bNoNext = false;
 	}
-
-	printf("Capacity %d\n", c);
 
 	return true;
 }
 
 void Digraph::BuildPlusNeighborsMap()
 {
+	mpPlusNeighbors.clear();
+
 	for (auto itv = vcVertices.begin(); itv != vcVertices.end(); itv++)
 	{
 		int v = *itv;
