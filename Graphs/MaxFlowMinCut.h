@@ -27,6 +27,8 @@ struct Edge
 		nF = 0;
 		nC = c;
 	}
+
+	int Rest() { return nC - nF; }
 };
 
 class Digraph

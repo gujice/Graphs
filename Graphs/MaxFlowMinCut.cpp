@@ -22,20 +22,22 @@ bool Digraph::DoMaxFlowMinCut()
 	int v = nQ;
 	bool bSReached = false;
 	bool bNoNext = false;
-	std::vector<Edge> vcW;
-
 	int c = INT_MAX;
 
-	for (int i = 0; i < 2; i++)
+	// create neightbours list
+	BuildPlusNeighborsMap();
+
+	for (int i = 0; i < 3; i++)
 	{
+		// init area
+		std::vector<int> vcW;
+		std::set<int> setVVisited = {nQ};
 		bSReached = false;
 		bNoNext = false;
 		v = nQ;
+		c = INT_MAX;
 
 		printf("%d\n", v);
-
-		// create neightbours list
-		BuildPlusNeighborsMap();
 
 		while (!bSReached && !bNoNext)
 		{
@@ -43,22 +45,31 @@ bool Digraph::DoMaxFlowMinCut()
 			{
 				for (auto it = mpPlusNeighbors[v].begin(); it != mpPlusNeighbors[v].end(); it++)
 				{
-					Edge& e = mpDelta[*it];
-					if (e.nVTo == nS)
+					int ei = *it;
+					Edge& e = mpDelta[ei];
+
+					// check already visited
+					if (setVVisited.find(e.nVTo) == setVVisited.end() && (e.nC > e.nF))
 					{
-						bSReached = true;
+						if (e.nVTo == nS)
+						{
+							bSReached = true;
+						}
+
+						// capacity 
+						if (e.Rest() < c)
+							c = e.Rest();
+
+						// next vertix
+						v = e.nVTo;
+						vcW.push_back(ei);
+
+						// visited!
+						setVVisited.insert(e.nVTo);
+
+						printf("%d\n", v);
+						break;
 					}
-
-					// capacity 
-					if (e.nC < c)
-						c = e.nC;
-
-					// next vertix
-					v = e.nVTo;
-					vcW.push_back(e);
-
-					printf("%d\n", v);
-					break;
 				}
 			}
 			else
@@ -66,22 +77,11 @@ bool Digraph::DoMaxFlowMinCut()
 		}
 
 		printf("\nCapacity %d\n", c);
-		for (auto& e : vcW)
+		for (auto& ei : vcW)
 		{
-			printf("%d-%d ", e.nVFrom, e.nVTo);
+			printf("%d-%d ", mpDelta[ei].nVFrom, mpDelta[ei].nVTo);
 
-			if (c - e.nC > 0)
-			{
-				e.nC = c - e.nC;
-			}
-			else
-			{
-				e.nC = c;
-
-				int fromto = e.nVFrom;
-				e.nVFrom = e.nVTo;
-				e.nVTo = fromto;
-			}
+			mpDelta[ei].nF += c;
 		}
 	}
 
