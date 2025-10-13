@@ -9,8 +9,8 @@ struct Edge
 	int nVFrom;
 	int nVTo;
 
-	int nF;
 	int nC;
+	int nF;
 
 	Edge()
 	{
@@ -51,6 +51,7 @@ public:
 	bool DoMaxFlowMinCut();
 
 private:
+	void Init();
 
 	void BuildPlusNeighborsMap();
 

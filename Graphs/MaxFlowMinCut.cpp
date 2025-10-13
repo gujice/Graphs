@@ -16,18 +16,102 @@ void Digraph::AddEdges(int* pEdges, int count)
 	}
 }
 
+void Digraph::Init()
+{
+	/*
+	int V[6] = { 0, 1, 2, 3, 4, 5 };
+	int E[9] = { 1, 2, 13, 14, 21, 24, 34, 35, 45 };
+
+	d.AddVertices(V, 6);
+	d.AddEdges(E, 9);
+
+	// quelle, senke
+	d.nQ = 0;
+	d.nS = 5;
+
+	// kanten
+	d.mpDelta = {
+		{1, Edge(0, 1, 3) },
+		{2, Edge(0, 2, 7) },
+		{13, Edge(1, 3, 3) },
+		{14, Edge(1, 4, 4) },
+		{21, Edge(2, 1, 5) },
+		{24, Edge(2, 4, 3) },
+		{34, Edge(3, 4, 3) },
+		{35, Edge(3, 5, 2) },
+		{45, Edge(4, 5, 6) }
+	};
+	*/
+
+	/*
+	int V[4] = { 0, 1, 2, 3 };
+	int E[5] = { 1, 2, 12, 13, 23 };
+
+	d.AddVertices(V, 4);
+	d.AddEdges(E, 5);
+
+	// quelle, senke
+	d.nQ = 0;
+	d.nS = 3;
+
+	// kanten
+	d.mpDelta = {
+		{1, Edge(0, 1, 13) },
+		{2, Edge(0, 2, 13) },
+		{12, Edge(1, 2, 1) },
+		{13, Edge(1, 3, 13) },
+		{23, Edge(2, 3, 13) }
+	};
+	*/
+
+#define tri 30
+#define jedan 10
+#define korendva 14
+
+	int V[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+	int E[15] = { 1, 4, 5, 51, 14, 45, 23, 36, 67, 27, 62, 37, 12, 34, 56 };
+
+	AddVertices(V, 8);
+	AddEdges(E, 15);
+
+	// quelle, senke
+	nQ = 0;
+	nS = 7;
+
+	// kanten
+	mpDelta = {
+		{1, Edge(0, 1, tri) },
+		{4, Edge(0, 4, tri) },
+		{5, Edge(0, 5, tri) },
+		{51, Edge(5, 1, tri) },
+		{14, Edge(1, 4, tri) },
+		{45, Edge(4, 5, tri) },
+		{23, Edge(2, 3, tri) },
+		{36, Edge(3, 6, tri) },
+		{67, Edge(6, 7, tri) },
+		{27, Edge(2, 7, tri) },
+		{62, Edge(6, 2, tri) },
+		{37, Edge(3, 7, tri) },
+		{12, Edge(1, 2, jedan) },
+		{34, Edge(3, 4, tri) },
+		{56, Edge(5, 6, korendva) }
+	};
+
+}
+
 bool Digraph::DoMaxFlowMinCut()
 {
+	Init();
+
 	std::set<int> setVVisited;
 	int v = nQ;
+	int prevV = nQ;
 	bool bSReached = false;
 	bool bNoNext = false;
 	int c = INT_MAX;
+	int nFlow = 0;
 
-	// create neightbours list
-	BuildPlusNeighborsMap();
-
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		// init area
 		std::vector<int> vcW;
@@ -39,10 +123,14 @@ bool Digraph::DoMaxFlowMinCut()
 
 		printf("%d\n", v);
 
+		// create neightbours list
+		BuildPlusNeighborsMap();
+
 		while (!bSReached && !bNoNext)
 		{
 			if (mpPlusNeighbors.find(v) != mpPlusNeighbors.end())
 			{
+				bool bFoundNext = false;
 				for (auto it = mpPlusNeighbors[v].begin(); it != mpPlusNeighbors[v].end(); it++)
 				{
 					int ei = *it;
@@ -57,12 +145,14 @@ bool Digraph::DoMaxFlowMinCut()
 						}
 
 						// capacity 
-						if (e.Rest() < c)
-							c = e.Rest();
+						if (e.nC < c)
+							c = e.nC;
 
 						// next vertix
+						prevV = v;
 						v = e.nVTo;
 						vcW.push_back(ei);
+						bFoundNext = true;
 
 						// visited!
 						setVVisited.insert(e.nVTo);
@@ -71,19 +161,54 @@ bool Digraph::DoMaxFlowMinCut()
 						break;
 					}
 				}
+
+				if (!bFoundNext)
+				{
+					// setVVisited.insert(v);
+					if (v == prevV) // break!!!
+					{
+						c = 0;
+						bNoNext = true;
+					}
+					else
+						v = prevV;
+				}
 			}
 			else
-				bNoNext = false;
+			{
+				c = 0;
+				bNoNext = true;
+			}
 		}
 
 		printf("\nCapacity %d\n", c);
-		for (auto& ei : vcW)
+		if (c > 0)
 		{
-			printf("%d-%d ", mpDelta[ei].nVFrom, mpDelta[ei].nVTo);
+			for (auto& ei : vcW)
+			{
+				printf("%d-%d ", mpDelta[ei].nVFrom, mpDelta[ei].nVTo);
 
-			mpDelta[ei].nF += c;
+				if (mpDelta[ei].nC - c > 0)
+				{
+					mpDelta[ei].nC = mpDelta[ei].nC - c;
+				}
+				else
+				{
+					mpDelta[ei].nC = c;
+
+					int fromto = mpDelta[ei].nVFrom;
+					mpDelta[ei].nVFrom = mpDelta[ei].nVTo;
+					mpDelta[ei].nVTo = fromto;
+				}
+			}
 		}
+
+		// count FLOW
+		nFlow += c;
 	}
+
+	// RESULT
+	printf("Flow is: %d\n", nFlow);
 
 	return true;
 }
