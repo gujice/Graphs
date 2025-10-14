@@ -124,11 +124,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Graphs.cpp" />
-    <ClCompile Include="MaxFlowMinCut.cpp" />
+    <ClCompile Include="Digraph.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MaxFlowMinCut.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="Digraph.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,20 +1,5 @@
-#include "MaxFlowMinCut.h"
+#include "Digraph.h"
 
-void Digraph::AddVertices(int* pVerts, int count)
-{
-	for (int i = 0; i < count; i++)
-	{
-		vcVertices.push_back(pVerts[i]);
-	}
-}
-
-void Digraph::AddEdges(int* pEdges, int count)
-{
-	for (int i = 0; i < count; i++)
-	{
-		vcEdges.push_back(pEdges[i]);
-	}
-}
 
 void Digraph::Init()
 {

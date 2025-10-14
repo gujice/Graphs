@@ -31,8 +31,9 @@ struct Edge
 	int Rest() { return nC - nF; }
 };
 
-class Digraph
+class Graph
 {
+protected:
 	std::vector<int> vcVertices;
 	std::vector<int> vcEdges;
 
@@ -48,13 +49,7 @@ public:
 	void AddVertices(int* pVerts, int count);
 	void AddEdges(int* pEdges, int count);
 
-	bool DoMaxFlowMinCut();
-
-private:
 	void Init();
-
-	void BuildPlusNeighborsMap();
-
-	std::map<int, std::vector<int>> mpPlusNeighbors;
+	bool IsBipartit();
 
 };

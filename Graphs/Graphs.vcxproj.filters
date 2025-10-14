@@ -15,15 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MaxFlowMinCut.cpp">
+    <ClCompile Include="Digraph.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Graphs.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Graph.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MaxFlowMinCut.h">
+    <ClInclude Include="Digraph.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
