@@ -31,7 +31,10 @@ void Graph::Init()
 		{23, Edge(2, 3, 3) },
 		{36, Edge(3, 6, 4) },
 		{45, Edge(4, 5, 5) },
-		{56, Edge(5, 6, 3) }
+		{56, Edge(5, 6, 3) },
+		{34, Edge(3, 4, 3) },
+		{24, Edge(2, 5, 3) },
+		{16, Edge(1, 6, 3) }
 	};
 
 	IsBipartit();
@@ -81,5 +84,24 @@ bool Graph::IsBipartit()
 		}
 	}
 
+	// first fast check
+	// both sets should be have at all the same count of elements as V
+	if (vcVertices.size() != (setV1.size() + setV2.size()))
+	{
+		printf("Graph is NOT bipartit! (different count of elements %d <-> %d)\n", vcVertices.size(), (setV1.size() + setV2.size()));
+		return false;
+	}
+
+	// no common elements
+	for (auto e : setV1)
+	{
+		if (setV2.find(e) != setV2.end())
+		{
+			printf("Graph is NOT bipartit! (common element %d)\n", e);
+			return false;
+		}
+	}
+
+	printf("Graph is bipartit!!!\n");
 	return true;
 }
