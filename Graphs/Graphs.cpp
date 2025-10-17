@@ -11,6 +11,7 @@ int main()
 	graph.Init();
 
 	graph.CreateTreeByBreadthFirst(1);
+	graph.CreateWaysByDijkstra(1);
 
 	return 0;
 }

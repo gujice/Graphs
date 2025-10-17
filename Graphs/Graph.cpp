@@ -148,20 +148,25 @@ std::vector<int> Graph::CreateTreeByBreadthFirst(int nStartEcke)
 {
 	std::vector<int> resTreeEdges;
 	int nVCount = (int)vcVertices.size();
-	vector<int>* pVcNeighbours = NULL; 
+	std::map<int, std::vector<int>> mpPlusNeighbors;
 
 	try
 	{
-		pVcNeighbours = new vector<int>[nVCount + 1];
-		for (auto ite = vcEdges.begin(); ite != vcEdges.end(); ite++)
+		for (auto itv = vcVertices.begin(); itv != vcVertices.end(); itv++)
 		{
-			if(mpDelta.find(*ite) != mpDelta.end())
+			int v = *itv;
+			for (auto ite = vcEdges.begin(); ite != vcEdges.end(); ite++)
 			{
-				int from = mpDelta[*ite].nVFrom;
-				int to = mpDelta[*ite].nVTo;
+				int ei = *ite;
 
-				pVcNeighbours[from].push_back(to);
-				pVcNeighbours[to].push_back(from);
+				// must exists
+				auto fe = mpDelta.find(ei);
+				if (fe != mpDelta.end())
+				{
+					Edge& e = fe->second;
+					if (e.nVFrom == v || e.nVTo == v)
+						mpPlusNeighbors[v].push_back(ei);
+				}
 			}
 		}
 	}
@@ -182,13 +187,16 @@ std::vector<int> Graph::CreateTreeByBreadthFirst(int nStartEcke)
 	{
 		int nNextEcke = qEckenToDo.front();
 		qEckenToDo.pop();
-		for (auto itn = pVcNeighbours[nNextEcke].begin(); itn != pVcNeighbours[nNextEcke].end(); itn++)
+		for (auto itn = mpPlusNeighbors[nNextEcke].begin(); itn != mpPlusNeighbors[nNextEcke].end(); itn++)
 		{
-			int nNeighbour = *itn;
+			int nNeighbourEdge = *itn;
+			int nNeighbour = mpDelta[nNeighbourEdge].nVTo;
+			if (nNeighbour == nNextEcke)
+				nNeighbour = mpDelta[nNeighbourEdge].nVFrom;
 			if (setEckenDone.find(nNeighbour) == setEckenDone.end())
 			{
 				// resTreeEdges.push_back(nNeighbour);
-				printf("***** %d - %d *********\n", nNextEcke, nNeighbour);
+				printf("***** %2d - %2d (%d) *********\n", nNextEcke, nNeighbour, nNeighbourEdge);
 
 				setEckenDone.insert(nNeighbour);
 				qEckenToDo.emplace(nNeighbour);
@@ -199,4 +207,87 @@ std::vector<int> Graph::CreateTreeByBreadthFirst(int nStartEcke)
 	}
 
 	return resTreeEdges;
+}
+
+bool Graph::CreateWaysByDijkstra(int nStartEcke)
+{
+	vector<Edge> m_vcKantenDone;
+	bool* m_pEckenDone;
+	float* m_pL;
+	vector<Edge>* m_vcPaths;
+	int m_nEckenCount = (int)vcVertices.size();
+	int m_nStartEcke = nStartEcke;
+
+	// reset
+	m_pL = new float[m_nEckenCount + 1];
+	m_pEckenDone = new bool[m_nEckenCount + 1];
+	m_vcPaths = new vector<Edge>[m_nEckenCount + 1];
+	memset(m_pL, 0, (m_nEckenCount + 1) * sizeof(unsigned));
+	memset(m_pEckenDone, false, (m_nEckenCount + 1) * sizeof(bool));
+	m_vcKantenDone.clear();
+
+	if (m_pL == NULL || nStartEcke >= m_nEckenCount || nStartEcke < 0)
+		return false;
+
+	m_nStartEcke = nStartEcke;
+	m_pEckenDone[nStartEcke] = true;
+	for (int i = 0; i < m_nEckenCount; i++)
+		m_vcPaths[i].clear();
+
+	for (int i = 0; i < m_nEckenCount; i++)
+	{
+		float nWeightMin = (float)((unsigned)-1);
+		int nEckeMin = -1;
+		Edge kDone;
+		vector<Edge> vcPath;
+
+		for (auto it = vcEdges.begin(); it != vcEdges.end(); it++)
+		{
+			Edge k = mpDelta[*it];
+			if (m_pEckenDone[k.nVFrom] && !m_pEckenDone[k.nVTo])
+			{
+				// if (m_pL[k.nVFrom] + k.weight < nWeightMin)
+				if (m_pL[k.nVFrom] + 1 < nWeightMin)
+				{
+					nWeightMin = m_pL[k.nVFrom] + 1; // k.weight;
+					nEckeMin = k.nVTo;
+					kDone = k;
+
+					// sPath = m_vcPaths[k.from] + ": " + std::to_string(k.from) + " " + std::to_string(k.to) + ", ";
+					vcPath.assign(m_vcPaths[k.nVFrom].begin(), m_vcPaths[k.nVFrom].end());
+					vcPath.push_back(k);
+				}
+			}
+			else if (m_pEckenDone[k.nVTo] && !m_pEckenDone[k.nVFrom])
+			{
+				// if (m_pL[k.to] + k.weight < nWeightMin)
+				if (m_pL[k.nVFrom] + 1 < nWeightMin)
+				{
+					nWeightMin = m_pL[k.nVTo] + 1; // k.weight;
+					nEckeMin = k.nVTo;
+					kDone = k;
+
+					// sPath = m_vcPaths[k.to] + ": " + std::to_string(k.to) + " " + std::to_string(k.from) + ", ";
+					vcPath.assign(m_vcPaths[k.nVTo].begin(), m_vcPaths[k.nVTo].end());
+					vcPath.push_back(k);
+				}
+			}
+		}
+
+		if (nEckeMin != -1)
+		{
+			m_pEckenDone[nEckeMin] = true;
+			m_pL[nEckeMin] = nWeightMin;
+			m_vcPaths[nEckeMin] = vcPath;
+			m_vcKantenDone.push_back(kDone);
+		}
+	}
+
+	int b = 16;
+	int d = (int)m_pL[b];
+
+	// wege zwischenspeichern
+	vector<Edge> vcPath = m_vcPaths[b];
+
+	return true;
 }

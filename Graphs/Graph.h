@@ -54,6 +54,8 @@ public:
 	void Init();
 	bool IsBipartit();
 
+	bool CreateWaysByDijkstra(int nStartEcke);
+
 	std::vector<int> CreateTreeByBreadthFirst(int nStartEcke);
 
 };
