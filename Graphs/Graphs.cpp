@@ -10,5 +10,7 @@ int main()
 	Graph graph;
 	graph.Init();
 
+	graph.CreateTreeByBreadthFirst(1);
+
 	return 0;
 }

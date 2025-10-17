@@ -3,6 +3,8 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <queue>
+#include <string>
 
 struct Edge
 {
@@ -51,5 +53,7 @@ public:
 
 	void Init();
 	bool IsBipartit();
+
+	std::vector<int> CreateTreeByBreadthFirst(int nStartEcke);
 
 };
