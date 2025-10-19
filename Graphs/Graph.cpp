@@ -40,6 +40,9 @@ void Graph::Init()
 		{16, Edge(1, 6, 3) }
 	};
 	*/
+
+	// ungarische alg.
+	/*
 	int V[16] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
 	int E[16] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
 
@@ -64,6 +67,73 @@ void Graph::Init()
 		{14, Edge(12, 13, 0) },
 		{15, Edge(13, 14, 0) },
 		{16, Edge(13, 16, 0) }
+	};
+
+	// beispiele seite 118
+	// euler
+	int V[6] = { 1, 2, 3, 4, 5, 6 };
+	int E[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+	AddVertices(V, 6);
+	AddEdges(E, 10);
+
+	// kanten
+	mpDelta = {
+		{1, Edge(1, 2, 0) },
+		{2, Edge(2, 3, 0) },
+		{3, Edge(3, 4, 0) },
+		{4, Edge(4, 5, 0) },
+		{5, Edge(5, 6, 0) },
+		{6, Edge(6, 1, 0) },
+		{7, Edge(6, 2, 0) },
+		{8, Edge(6, 3, 0) },
+		{9, Edge(5, 2, 0) },
+		{10, Edge(5, 3, 0) }
+	};
+
+	// euler, no eulerian
+	int V[5] = { 1, 2, 3, 5, 6 };
+	int E[8] = { 1, 2, 5, 6, 7, 8, 9, 10 };
+
+	AddVertices(V, 5);
+	AddEdges(E, 8);
+
+	// kanten
+	mpDelta = {
+		{1, Edge(1, 2, 0) },
+		{2, Edge(2, 3, 0) },
+		{5, Edge(5, 6, 0) },
+		{6, Edge(6, 1, 0) },
+		{7, Edge(6, 2, 0) },
+		{8, Edge(6, 3, 0) },
+		{9, Edge(5, 2, 0) },
+		{10, Edge(5, 3, 0) }
+	};
+	*/
+
+
+	// eulerian II
+	int V[8] = { 1, 2, 3, 5, 6, 7, 8 };
+	int E[13] = { 12, 23, 38, 84, 45, 56, 61, 17, 15, 57, 47, 37, 34 };
+
+	AddVertices(V, 8);
+	AddEdges(E, 13);
+
+	// kanten
+	mpDelta = {
+		{12, Edge(1, 2, 0) },
+		{23, Edge(2, 3, 0) },
+		{38, Edge(3, 8, 0) },
+		{84, Edge(8, 4, 0) },
+		{45, Edge(4, 5, 0) },
+		{56, Edge(5, 6, 0) },
+		{61, Edge(6, 1, 0) },
+		{17, Edge(1, 7, 0) },
+		{15, Edge(1, 5, 0) },
+		{57, Edge(5, 7, 0) },
+		{47, Edge(4, 7, 0) },
+		{37, Edge(3, 7, 0) },
+		{34, Edge(3, 4, 0) }
 	};
 
 	IsBipartit();
@@ -290,4 +360,30 @@ bool Graph::CreateWaysByDijkstra(int nStartEcke)
 	vector<Edge> vcPath = m_vcPaths[b];
 
 	return true;
+}
+
+void Graph::BuildNeighborsMap()
+{
+	mpNeighbors.clear();
+
+	for (auto itv = vcVertices.begin(); itv != vcVertices.end(); itv++)
+	{
+		int v = *itv;
+		for (auto ite = vcEdges.begin(); ite != vcEdges.end(); ite++)
+		{
+			int ei = *ite;
+
+			// must exists
+			auto fe = mpDelta.find(ei);
+			if (fe != mpDelta.end())
+			{
+				Edge& e = fe->second;
+				if (e.nVFrom == v || e.nVTo == v) // here the only one difference with digraph!!!
+				{
+					// mpPlusNeighbors[v].push_back(e.nVTo);
+					mpNeighbors[v].push_back(ei);
+				}
+			}
+		}
+	}
 }

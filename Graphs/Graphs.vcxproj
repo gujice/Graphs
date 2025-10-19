@@ -127,6 +127,7 @@
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Graphs.cpp" />
     <ClCompile Include="Digraph.cpp" />
+    <ClCompile Include="Euler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h" />

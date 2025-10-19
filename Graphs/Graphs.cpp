@@ -10,8 +10,11 @@ int main()
 	Graph graph;
 	graph.Init();
 
-	graph.CreateTreeByBreadthFirst(1);
-	graph.CreateWaysByDijkstra(1);
+	// graph.CreateTreeByBreadthFirst(1);
+	// graph.CreateWaysByDijkstra(1);
+
+	graph.IsEulerian();
+	graph.FindEulertour();
 
 	return 0;
 }

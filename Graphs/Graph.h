@@ -6,6 +6,8 @@
 #include <queue>
 #include <string>
 
+typedef unsigned char byte;
+
 struct Edge
 {
 	int nVFrom;
@@ -31,6 +33,7 @@ struct Edge
 	}
 
 	int Rest() { return nC - nF; }
+	int GetOtherV(int v) { return v == nVFrom ? nVTo : nVFrom; }
 };
 
 class Graph
@@ -38,6 +41,9 @@ class Graph
 protected:
 	std::vector<int> vcVertices;
 	std::vector<int> vcEdges;
+
+	std::map<int, std::vector<int>> mpNeighbors;
+
 
 public:
 
@@ -54,8 +60,15 @@ public:
 	void Init();
 	bool IsBipartit();
 
+	// euler
+	bool IsEulerian();
+	std::vector<int> FindEulertour();
+
 	bool CreateWaysByDijkstra(int nStartEcke);
 
 	std::vector<int> CreateTreeByBreadthFirst(int nStartEcke);
+
+private:
+	void BuildNeighborsMap();
 
 };
