@@ -39,16 +39,17 @@ struct Edge
 class Graph
 {
 protected:
-	std::vector<int> vcVertices;
-	std::vector<int> vcEdges;
+	std::vector<int> m_vcVertices;
+	std::vector<int> m_vcEdges;
 
 	std::map<int, std::vector<int>> mpNeighbors;
+	std::map<int, std::vector<int>> mpCoveredEdgesByV;
 
 
 public:
 
 	// edge -> (vert1, vert2)
-	std::map<int, Edge> mpDelta;
+	std::map<int, Edge> m_mpDelta;
 
 	// quelle, senke
 	int nQ;
@@ -63,6 +64,12 @@ public:
 	// euler
 	bool IsEulerian();
 	std::vector<int> FindEulertour();
+
+	// hamilton
+	bool CheckKorollarORE();
+	bool CheckKorollarDIRAC();
+	bool CheckTheoremCHVATAL();
+	bool DoHamiltonAlg();
 
 	bool CreateWaysByDijkstra(int nStartEcke);
 

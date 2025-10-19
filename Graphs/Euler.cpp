@@ -6,7 +6,7 @@ bool Graph::IsEulerian()
 
 	BuildNeighborsMap();
 
-	for (auto it : mpNeighbors)
+	for (auto it : mpCoveredEdgesByV)
 	{
 		if (it.second.size() % 2 != 0)
 		{
@@ -35,18 +35,18 @@ std::vector<int> Graph::FindEulertour()
 	};
 
 	std::vector<int> vcTour;
-	int v = vcVertices[0];
+	int v = m_vcVertices[0];
 	int cnt = 0;
 	std::map<int, EdgeTrace> mpEdgesUsedFlag;
 
-	while (cnt <= 2 * vcVertices.size())
+	while (cnt <= 2 * m_vcVertices.size())
 	{
 		bool bFoundNext = false;
 		int next_ei = -1;
 
-		for (auto ei : mpNeighbors[v])
+		for (auto ei : mpCoveredEdgesByV[v])
 		{
-			Edge& e = mpDelta[ei];
+			Edge& e = m_mpDelta[ei];
 
 			auto itUsed = mpEdgesUsedFlag.find(ei);
 			if (itUsed == mpEdgesUsedFlag.end())
@@ -73,7 +73,7 @@ std::vector<int> Graph::FindEulertour()
 				// ende!
 				break;
 			}
-			Edge& e = mpDelta[ei];
+			Edge& e = m_mpDelta[ei];
 			mpEdgesUsedFlag[ei].from2 = v;
 			v = e.GetOtherV(v);
 			vcTour.push_back(ei);

@@ -16,5 +16,10 @@ int main()
 	graph.IsEulerian();
 	graph.FindEulertour();
 
+	graph.CheckKorollarORE();
+	graph.CheckKorollarDIRAC();
+	graph.CheckTheoremCHVATAL();
+	graph.DoHamiltonAlg();
+
 	return 0;
 }

@@ -64,7 +64,7 @@ void Digraph::Init()
 	nS = 7;
 
 	// kanten
-	mpDelta = {
+	m_mpDelta = {
 		{1, Edge(0, 1, tri) },
 		{4, Edge(0, 4, tri) },
 		{5, Edge(0, 5, tri) },
@@ -119,7 +119,7 @@ bool Digraph::DoMaxFlowMinCut()
 				for (auto it = mpPlusNeighbors[v].begin(); it != mpPlusNeighbors[v].end(); it++)
 				{
 					int ei = *it;
-					Edge& e = mpDelta[ei];
+					Edge& e = m_mpDelta[ei];
 
 					// check already visited
 					if (setVVisited.find(e.nVTo) == setVVisited.end() && (e.nC > e.nF))
@@ -171,19 +171,19 @@ bool Digraph::DoMaxFlowMinCut()
 		{
 			for (auto& ei : vcW)
 			{
-				printf("%d-%d ", mpDelta[ei].nVFrom, mpDelta[ei].nVTo);
+				printf("%d-%d ", m_mpDelta[ei].nVFrom, m_mpDelta[ei].nVTo);
 
-				if (mpDelta[ei].nC - c > 0)
+				if (m_mpDelta[ei].nC - c > 0)
 				{
-					mpDelta[ei].nC = mpDelta[ei].nC - c;
+					m_mpDelta[ei].nC = m_mpDelta[ei].nC - c;
 				}
 				else
 				{
-					mpDelta[ei].nC = c;
+					m_mpDelta[ei].nC = c;
 
-					int fromto = mpDelta[ei].nVFrom;
-					mpDelta[ei].nVFrom = mpDelta[ei].nVTo;
-					mpDelta[ei].nVTo = fromto;
+					int fromto = m_mpDelta[ei].nVFrom;
+					m_mpDelta[ei].nVFrom = m_mpDelta[ei].nVTo;
+					m_mpDelta[ei].nVTo = fromto;
 				}
 			}
 		}
@@ -202,16 +202,16 @@ void Digraph::BuildPlusNeighborsMap()
 {
 	mpPlusNeighbors.clear();
 
-	for (auto itv = vcVertices.begin(); itv != vcVertices.end(); itv++)
+	for (auto itv = m_vcVertices.begin(); itv != m_vcVertices.end(); itv++)
 	{
 		int v = *itv;
-		for (auto ite = vcEdges.begin(); ite != vcEdges.end(); ite++)
+		for (auto ite = m_vcEdges.begin(); ite != m_vcEdges.end(); ite++)
 		{
 			int ei = *ite;
 
 			// must exists
-			auto fe = mpDelta.find(ei);
-			if (fe != mpDelta.end())
+			auto fe = m_mpDelta.find(ei);
+			if (fe != m_mpDelta.end())
 			{
 				Edge& e = fe->second;
 				if (e.nVFrom == v)

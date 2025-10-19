@@ -6,7 +6,7 @@ void Graph::AddVertices(int* pVerts, int count)
 {
 	for (int i = 0; i < count; i++)
 	{
-		vcVertices.push_back(pVerts[i]);
+		m_vcVertices.push_back(pVerts[i]);
 	}
 }
 
@@ -14,7 +14,7 @@ void Graph::AddEdges(int* pEdges, int count)
 {
 	for (int i = 0; i < count; i++)
 	{
-		vcEdges.push_back(pEdges[i]);
+		m_vcEdges.push_back(pEdges[i]);
 	}
 }
 
@@ -111,16 +111,16 @@ void Graph::Init()
 	};
 	*/
 
-
 	// eulerian II
-	int V[8] = { 1, 2, 3, 5, 6, 7, 8 };
+	/*
+	int V[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
 	int E[13] = { 12, 23, 38, 84, 45, 56, 61, 17, 15, 57, 47, 37, 34 };
 
 	AddVertices(V, 8);
 	AddEdges(E, 13);
 
 	// kanten
-	mpDelta = {
+	m_mpDelta = {
 		{12, Edge(1, 2, 0) },
 		{23, Edge(2, 3, 0) },
 		{38, Edge(3, 8, 0) },
@@ -135,6 +135,33 @@ void Graph::Init()
 		{37, Edge(3, 7, 0) },
 		{34, Edge(3, 4, 0) }
 	};
+	*/
+
+	// hamilton, page 151
+	int V[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+	int E[16] = { 12, 16, 13, 14, 24, 25, 75, 78, 63, 68, 34, 45, 58, 38, 27, 67 };
+
+	AddVertices(V, 8);
+	AddEdges(E, 16);
+
+	m_mpDelta = {
+		{13, Edge(1, 3, 0) },
+		{14, Edge(1, 4, 0) },
+		{24, Edge(2, 4, 0) },
+		{25, Edge(2, 5, 0) },
+		{75, Edge(7, 5, 0) },
+		{78, Edge(7, 8, 0) },
+		{63, Edge(6, 3, 0) },
+		{68, Edge(6, 8, 0) },
+		{34, Edge(3, 4, 0) },
+		{45, Edge(4, 5, 0) },
+		{58, Edge(5, 8, 0) },
+		{38, Edge(3, 8, 0) },
+		{12, Edge(1, 2, 0) },
+		{16, Edge(1, 6, 0) },
+		{27, Edge(2, 7, 0) },
+		{67, Edge(6, 7, 0) }
+	};
 
 	IsBipartit();
 }
@@ -145,7 +172,7 @@ bool Graph::IsBipartit()
 	std::set<int> setV1;
 	std::set<int> setV2;
 
-	for (auto itv = vcVertices.begin(); itv != vcVertices.end(); itv++)
+	for (auto itv = m_vcVertices.begin(); itv != m_vcVertices.end(); itv++)
 	{
 		eV = NO;
 		int v = *itv;
@@ -161,7 +188,7 @@ bool Graph::IsBipartit()
 			eV = V1;
 		}
 
-		for (auto e : mpDelta)
+		for (auto e : m_mpDelta)
 		{
 			int ei = e.first;
 			const Edge& edge = e.second;
@@ -185,9 +212,9 @@ bool Graph::IsBipartit()
 
 	// first fast check
 	// both sets should be have at all the same count of elements as V
-	if (vcVertices.size() != (setV1.size() + setV2.size()))
+	if (m_vcVertices.size() != (setV1.size() + setV2.size()))
 	{
-		printf("Graph is NOT bipartit! (different count of elements %d <-> %d)\n", (int)vcVertices.size(), (int)(setV1.size() + setV2.size()));
+		printf("Graph is NOT bipartit! (different count of elements %d <-> %d)\n", (int)m_vcVertices.size(), (int)(setV1.size() + setV2.size()));
 		return false;
 	}
 
@@ -217,21 +244,21 @@ bool Graph::IsBipartit()
 std::vector<int> Graph::CreateTreeByBreadthFirst(int nStartEcke)
 {
 	std::vector<int> resTreeEdges;
-	int nVCount = (int)vcVertices.size();
+	int nVCount = (int)m_vcVertices.size();
 	std::map<int, std::vector<int>> mpPlusNeighbors;
 
 	try
 	{
-		for (auto itv = vcVertices.begin(); itv != vcVertices.end(); itv++)
+		for (auto itv = m_vcVertices.begin(); itv != m_vcVertices.end(); itv++)
 		{
 			int v = *itv;
-			for (auto ite = vcEdges.begin(); ite != vcEdges.end(); ite++)
+			for (auto ite = m_vcEdges.begin(); ite != m_vcEdges.end(); ite++)
 			{
 				int ei = *ite;
 
 				// must exists
-				auto fe = mpDelta.find(ei);
-				if (fe != mpDelta.end())
+				auto fe = m_mpDelta.find(ei);
+				if (fe != m_mpDelta.end())
 				{
 					Edge& e = fe->second;
 					if (e.nVFrom == v || e.nVTo == v)
@@ -260,9 +287,9 @@ std::vector<int> Graph::CreateTreeByBreadthFirst(int nStartEcke)
 		for (auto itn = mpPlusNeighbors[nNextEcke].begin(); itn != mpPlusNeighbors[nNextEcke].end(); itn++)
 		{
 			int nNeighbourEdge = *itn;
-			int nNeighbour = mpDelta[nNeighbourEdge].nVTo;
+			int nNeighbour = m_mpDelta[nNeighbourEdge].nVTo;
 			if (nNeighbour == nNextEcke)
-				nNeighbour = mpDelta[nNeighbourEdge].nVFrom;
+				nNeighbour = m_mpDelta[nNeighbourEdge].nVFrom;
 			if (setEckenDone.find(nNeighbour) == setEckenDone.end())
 			{
 				// resTreeEdges.push_back(nNeighbour);
@@ -285,7 +312,7 @@ bool Graph::CreateWaysByDijkstra(int nStartEcke)
 	bool* m_pEckenDone;
 	float* m_pL;
 	vector<Edge>* m_vcPaths;
-	int m_nEckenCount = (int)vcVertices.size();
+	int m_nEckenCount = (int)m_vcVertices.size();
 	int m_nStartEcke = nStartEcke;
 
 	// reset
@@ -311,9 +338,9 @@ bool Graph::CreateWaysByDijkstra(int nStartEcke)
 		Edge kDone;
 		vector<Edge> vcPath;
 
-		for (auto it = vcEdges.begin(); it != vcEdges.end(); it++)
+		for (auto it = m_vcEdges.begin(); it != m_vcEdges.end(); it++)
 		{
-			Edge k = mpDelta[*it];
+			Edge k = m_mpDelta[*it];
 			if (m_pEckenDone[k.nVFrom] && !m_pEckenDone[k.nVTo])
 			{
 				// if (m_pL[k.nVFrom] + k.weight < nWeightMin)
@@ -365,23 +392,24 @@ bool Graph::CreateWaysByDijkstra(int nStartEcke)
 void Graph::BuildNeighborsMap()
 {
 	mpNeighbors.clear();
+	mpCoveredEdgesByV.clear();
 
-	for (auto itv = vcVertices.begin(); itv != vcVertices.end(); itv++)
+	for (auto itv = m_vcVertices.begin(); itv != m_vcVertices.end(); itv++)
 	{
 		int v = *itv;
-		for (auto ite = vcEdges.begin(); ite != vcEdges.end(); ite++)
+		for (auto ite = m_vcEdges.begin(); ite != m_vcEdges.end(); ite++)
 		{
 			int ei = *ite;
 
 			// must exists
-			auto fe = mpDelta.find(ei);
-			if (fe != mpDelta.end())
+			auto fe = m_mpDelta.find(ei);
+			if (fe != m_mpDelta.end())
 			{
 				Edge& e = fe->second;
 				if (e.nVFrom == v || e.nVTo == v) // here the only one difference with digraph!!!
 				{
-					// mpPlusNeighbors[v].push_back(e.nVTo);
-					mpNeighbors[v].push_back(ei);
+					mpCoveredEdgesByV[v].push_back(ei);
+					mpNeighbors[v].push_back(e.GetOtherV(v));
 				}
 			}
 		}
