@@ -2,7 +2,7 @@
 
 int compare(const void* arg1, const void* arg2)
 {
-	return (int)((int*)arg1) < (int)((int*)arg2);
+	return *((int*)arg1) < *((int*)arg2);
 }
 
 bool Graph::CheckKorollarORE()
@@ -11,7 +11,7 @@ bool Graph::CheckKorollarORE()
 
 	BuildNeighborsMap();
 
-	int nVSize = m_vcVertices.size();
+	int nVSize = (int)m_vcVertices.size();
 
 	for (int i = 0; i < nVSize; i++)
 	{
@@ -21,10 +21,10 @@ bool Graph::CheckKorollarORE()
 			int vj = m_vcVertices[j];
 			if (std::find(mpNeighbors[vi].begin(), mpNeighbors[vi].end(), vj) == mpNeighbors[vi].end())
 			{
-				int dsum = mpNeighbors[vi].size() + mpNeighbors[vj].size();
+				int dsum = (int)(mpNeighbors[vi].size() + mpNeighbors[vj].size());
 				if (dsum < nVSize)
 				{
-					printf("Ore not fulfilled (%d: %d + %d: %d < %d)\n", vi, mpNeighbors[vi].size(), vj, mpNeighbors[vj].size(), nVSize);
+					printf("Ore not fulfilled (%d: %lld + %d: %lld < %d)\n", vi, mpNeighbors[vi].size(), vj, mpNeighbors[vj].size(), nVSize);
 					bRes = false;
 					return false;
 				}
