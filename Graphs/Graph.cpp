@@ -163,6 +163,25 @@ void Graph::Init()
 		{67, Edge(6, 7, 0) }
 	};
 
+	// hamilton, page 147
+	/*
+	int V[5] = { 1, 2, 3, 4, 5 };
+	int E[7] = { 12, 14, 23, 24, 34, 25, 35 };
+
+	AddVertices(V, 5);
+	AddEdges(E, 7);
+
+	m_mpDelta = {
+		{12, Edge(1, 2, 0) },
+		{14, Edge(1, 4, 0) },
+		{23, Edge(2, 3, 0) },
+		{24, Edge(2, 4, 0) },
+		{34, Edge(3, 4, 0) },
+		{25, Edge(2, 5, 0) },
+		{35, Edge(3, 5, 0) }
+	};
+	*/
+
 	IsBipartit();
 }
 

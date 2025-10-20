@@ -5,6 +5,7 @@
 #include <set>
 #include <queue>
 #include <string>
+#include <algorithm> 
 
 typedef unsigned char byte;
 

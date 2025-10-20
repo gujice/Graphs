@@ -112,42 +112,79 @@ bool Graph::DoHamiltonAlg()
 	bool bRes = false;
 	std::vector<int> vcPath;
 	int nCount = (int)m_vcVertices.size();
+	std::map<int, int> mpUsedEdges;
 
 	BuildNeighborsMap();
+
+	for (auto& it : mpNeighbors)
+	{
+		std::sort(it.second.begin(), it.second.end());
+	}
 
 	// build paths
 	int v = m_vcVertices[0];
 	vcPath.push_back(v);
 
-	for (int i = 0; i < nCount; i++)
+	while (true)
 	{
-		bool bFoundNext = false;
-		for (int j = 0; j < mpNeighbors[v].size(); j++)
+		for (int i = 0; i < nCount; i++)
 		{
-			int nextV = mpNeighbors[v][j];
-			if (std::find(vcPath.begin(), vcPath.end(), nextV) == vcPath.end())
+			bool bFoundNext = false;
+			for (int j = 0; j < mpNeighbors[v].size(); j++)
 			{
-				vcPath.push_back(nextV);
-				v = nextV;
-				bFoundNext = true;
-				break;
-			}
-		}
-
-		if (!bFoundNext)
-		{
-			if (vcPath.size() == nCount)
-			{
-				// check end -> begin
-				int nFirst = vcPath.front();
-				int nLast = vcPath.back();
-				if (std::find(mpNeighbors[nLast].begin(), mpNeighbors[nLast].end(), nFirst) != mpNeighbors[nLast].end())
+				int nextV = mpNeighbors[v][j];
+				if (std::find(vcPath.begin(), vcPath.end(), nextV) == vcPath.end())
 				{
-					bRes = true;
+					// finish!!!
+					vcPath.push_back(nextV);
+					v = nextV;
 					break;
 				}
 			}
 		}
+
+		if (vcPath.size() == nCount)
+		{
+			// check end -> begin
+			int nFirst = vcPath.front();
+			int nLast = vcPath.back();
+			if (std::find(mpNeighbors[nLast].begin(), mpNeighbors[nLast].end(), nFirst) != mpNeighbors[nLast].end())
+			{
+				bRes = true;
+				break;
+			}
+		}
+
+		// path correction
+		while (!vcPath.empty())
+		{
+			v = vcPath.back();
+			bool bFoundNext = false;
+			vcPath.pop_back();
+			int prevV = vcPath.back();
+			for (int j = 0; j < mpNeighbors[prevV].size(); j++)
+			{
+				int nextV = mpNeighbors[prevV][j];
+				if (nextV > v && std::find(vcPath.begin(), vcPath.end(), nextV) == vcPath.end())
+				{
+					vcPath.push_back(nextV);
+					// if(mpUsedEdges[v] == nextV; // mark used edge
+					v = nextV;
+					bFoundNext = true;
+					break;
+				}
+			}
+			if (bFoundNext)
+				break;
+		}
+	}
+
+	if (bRes)
+	{
+		printf("\n");
+		for (auto it : vcPath)
+			printf("%d ", it);
+		printf("%d\n", vcPath[0]);
 	}
 
 	return bRes;

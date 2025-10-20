@@ -10,7 +10,7 @@ bool Graph::IsEulerian()
 	{
 		if (it.second.size() % 2 != 0)
 		{
-			printf("Ecke %d, Grad %d\n", it.first, it.second.size());
+			printf("Ecke %d, Grad %lld\n", it.first, it.second.size());
 			bResult = false;
 			break;
 		}
