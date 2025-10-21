@@ -79,4 +79,6 @@ public:
 private:
 	void BuildNeighborsMap();
 
+	void InitGraph();
+
 };
