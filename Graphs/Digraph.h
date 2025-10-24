@@ -10,9 +10,10 @@ public:
 	int nS;
 
 	bool DoMaxFlowMinCut();
+	bool EdmondsKarpAlg();
 
 private:
-	void Init();
+	void Init1();
 
 	void BuildPlusNeighborsMap();
 

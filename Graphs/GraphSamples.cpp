@@ -10,9 +10,14 @@ void Graph::InitGraph()
 		EULER_no_euler,
 		EULERIAN_II,
 		HAMILTON_page_151,
-		HAMILTON_page_147
+		HAMILTON_page_147,
+		FORD_FULCERSON_youtube, // https://www.youtube.com/watch?v=hEHooOdsNdk
+		FORD_FULCERSON_youtube2, // https://www.youtube.com/watch?v=ZKEi6zf0O9g&t=112s
+		Edmonds_Karp_WIKI, // https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm
+		Edmonds_Karp_WIKI2, // https://de.wikipedia.org/wiki/Algorithmus_von_Ford_und_Fulkerson
+		Edmonds_Karp_WIKI3 
 	} 
-	GraphSamples = HAMILTON_page_151;
+	GraphSamples = Edmonds_Karp_WIKI3;
 
 	switch (GraphSamples)
 	{
@@ -198,6 +203,111 @@ void Graph::InitGraph()
 				{34, Edge(3, 4, 0) },
 				{25, Edge(2, 5, 0) },
 				{35, Edge(3, 5, 0) }
+			};
+		}
+		break;
+		// example from internet (youtube: FORD_FULCERSON_youtube: https://www.youtube.com/watch?v=hEHooOdsNdk)
+		case FORD_FULCERSON_youtube:
+		{
+			int V[] = { 1, 2, 3, 4, 5, 6 };
+			int E[] = { 12, 23, 34, 54, 65, 16, 62, 25, 35 };
+
+			AddVertices(V, sizeof(V) / sizeof(V[0]));
+			AddEdges(E, sizeof(E) / sizeof(E[0]));
+
+			m_mpDelta = {
+				{12, Edge(1, 2, 5) },
+				{23, Edge(2, 3, 4) },
+				{34, Edge(3, 4, 4) },
+				{54, Edge(5, 4, 12) },
+				{35, Edge(3, 5, 6) },
+				{25, Edge(2, 5, 5) },
+				{65, Edge(6, 5, 5) },
+				{16, Edge(1, 6, 10) },
+				{62, Edge(6, 2, 6) }
+			};
+		}
+		break;
+		// example from internet (youtube: FORD_FULCERSON_youtube: https://www.youtube.com/watch?v=ZKEi6zf0O9g&t=112s)
+		case FORD_FULCERSON_youtube2:
+		{
+			int V[] = { 1, 2, 3, 4, 5, 6 };
+			int E[] = { 12, 23, 34, 54, 65, 16, 62, 36, 53 };
+
+			AddVertices(V, sizeof(V) / sizeof(V[0]));
+			AddEdges(E, sizeof(E) / sizeof(E[0]));
+
+			m_mpDelta = {
+				{12, Edge(1, 2, 15) },
+				{23, Edge(2, 3, 11) },
+				{34, Edge(3, 4, 20) },
+				{54, Edge(5, 4, 6) },
+				{53, Edge(5, 3, 8) },
+				{36, Edge(3, 6, 8) },
+				{65, Edge(6, 5, 14) },
+				{16, Edge(1, 6, 13) },
+				{62, Edge(6, 2, 4) }
+			};
+		}
+		break;
+		// example from internet (WIKIPEDIA)
+		case Edmonds_Karp_WIKI:
+		{
+			int V[] = { 1, 2, 3, 4, 5, 6, 7 };
+			int E[] = { 12, 14, 31, 35, 23, 34, 52, 45, 46, 67, 57 };
+
+			AddVertices(V, sizeof(V) / sizeof(V[0]));
+			AddEdges(E, sizeof(E) / sizeof(E[0]));
+
+			m_mpDelta = {
+				{12, Edge(1, 2, 3) },
+				{14, Edge(1, 4, 3) },
+				{31, Edge(3, 1, 3) },
+				{35, Edge(3, 5, 2) },
+				{23, Edge(2, 3, 4) },
+				{34, Edge(3, 4, 1) },
+				{52, Edge(5, 2, 1) },
+				{45, Edge(4, 5, 2) },
+				{46, Edge(4, 6, 6) },
+				{67, Edge(6, 7, 9) },
+				{57, Edge(5, 7, 1) }
+			};
+		}
+		break;
+		// example from internet (WIKIPEDIA)
+		case Edmonds_Karp_WIKI2:
+		{
+			int V[] = { 1, 2, 3, 4 };
+			int E[] = { 12, 23, 24, 14, 43 };
+
+			AddVertices(V, sizeof(V) / sizeof(V[0]));
+			AddEdges(E, sizeof(E) / sizeof(E[0]));
+
+			m_mpDelta = {
+				{12, Edge(1, 2, 4) },
+				{23, Edge(2, 3, 1) },
+				{24, Edge(2, 4, 3) },
+				{14, Edge(1, 4, 2) },
+				{43, Edge(4, 3, 6) }
+			};
+		}
+		break;
+		// example from internet (WIKIPEDIA) https://sr.wikipedia.org/wiki/%D0%A4%D0%BE%D1%80%D0%B4-%D0%A4%D1%83%D0%BB%D0%BA%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%BE%D0%B2_%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%B0%D0%BC
+		case Edmonds_Karp_WIKI3:
+		{
+			int V[] = { 1, 2, 3, 4, 5 };
+			int E[] = { 12, 23, 14, 43, 45, 35 };
+
+			AddVertices(V, sizeof(V) / sizeof(V[0]));
+			AddEdges(E, sizeof(E) / sizeof(E[0]));
+
+			m_mpDelta = {
+				{12, Edge(1, 2, 7) },
+				{14, Edge(1, 4, 6) },
+				{23, Edge(2, 3, 3) },
+				{43, Edge(4, 3, 2) },
+				{35, Edge(3, 5, 5) },
+				{45, Edge(4, 5, 2) }
 			};
 		}
 		break;

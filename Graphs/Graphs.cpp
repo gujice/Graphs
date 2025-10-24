@@ -2,10 +2,11 @@
 
 int main()
 {
-	/*
 	Digraph d;
-	d.DoMaxFlowMinCut();
-	*/
+	// d.DoMaxFlowMinCut();
+	d.EdmondsKarpAlg();
+
+	return 0;
 
 	Graph graph;
 	graph.Init();
