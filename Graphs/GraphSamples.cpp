@@ -15,9 +15,11 @@ void Graph::InitGraph()
 		FORD_FULCERSON_youtube2, // https://www.youtube.com/watch?v=ZKEi6zf0O9g&t=112s
 		Edmonds_Karp_WIKI, // https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm
 		Edmonds_Karp_WIKI2, // https://de.wikipedia.org/wiki/Algorithmus_von_Ford_und_Fulkerson
-		Edmonds_Karp_WIKI3 
+		Edmonds_Karp_WIKI3,
+		Edmons_Karp_side242, // example, more steps
+		BIPARTIT_4X4 
 	} 
-	GraphSamples = Edmonds_Karp_WIKI3;
+	GraphSamples = UNGARIAN_ALG_S;
 
 	switch (GraphSamples)
 	{
@@ -300,6 +302,7 @@ void Graph::InitGraph()
 
 			AddVertices(V, sizeof(V) / sizeof(V[0]));
 			AddEdges(E, sizeof(E) / sizeof(E[0]));
+			SetQandS(1, 5);
 
 			m_mpDelta = {
 				{12, Edge(1, 2, 7) },
@@ -308,6 +311,55 @@ void Graph::InitGraph()
 				{43, Edge(4, 3, 2) },
 				{35, Edge(3, 5, 5) },
 				{45, Edge(4, 5, 2) }
+			};
+		}
+		break;
+		// side 242
+		case Edmons_Karp_side242:
+		{
+			enum {c = 10};
+			int V[] = { 1, 2, 3, 4 };
+			int E[] = { 12, 23, 43, 14, 24 };
+
+			AddVertices(V, sizeof(V) / sizeof(V[0]));
+			AddEdges(E, sizeof(E) / sizeof(E[0]));
+			SetQandS(1, 3);
+
+			m_mpDelta = {
+				{12, Edge(1, 2, c) },
+				{43, Edge(4, 3, c) },
+				{23, Edge(2, 3, c) },
+				{14, Edge(1, 4, c) },
+				{24, Edge(2, 4, 1) }
+			};
+		}
+		break;
+		// bipartit 4 x 4
+		case BIPARTIT_4X4:
+		{
+			int V[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+			int E[] = { 15, 16, 17, 18, 25, 26, 27, 28, 35, 36, 37, 38, 45, 46, 47, 48 };
+
+			AddVertices(V, sizeof(V) / sizeof(V[0]));
+			AddEdges(E, sizeof(E) / sizeof(E[0]));
+
+			m_mpDelta = {
+				{15, Edge(1, 5, 1) },
+				{16, Edge(1, 6, 1) },
+				{17, Edge(1, 7, 1) },
+				{18, Edge(1, 8, 1) },
+				{25, Edge(2, 5, 1) },
+				{26, Edge(2, 6, 1) },
+				{27, Edge(2, 7, 1) },
+				{28, Edge(2, 8, 1) },
+				{35, Edge(3, 5, 1) },
+				{36, Edge(3, 6, 1) },
+				{37, Edge(3, 7, 1) },
+				{38, Edge(3, 8, 1) },
+				{45, Edge(4, 5, 1) },
+				{46, Edge(4, 6, 1) },
+				{47, Edge(4, 7, 1) },
+				{48, Edge(4, 8, 1) }
 			};
 		}
 		break;

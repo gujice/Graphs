@@ -124,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Coloring.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Graphs.cpp" />
     <ClCompile Include="Digraph.cpp" />

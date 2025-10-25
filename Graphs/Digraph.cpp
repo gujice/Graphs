@@ -2,6 +2,11 @@
 
 using namespace std;
 
+Digraph::Digraph()
+{
+	Init();
+}
+
 void Digraph::Init1()
 {
 	/*
@@ -229,11 +234,6 @@ void Digraph::BuildPlusNeighborsMap()
 
 bool Digraph::EdmondsKarpAlg()
 {
-	Init();
-
-	nQ = 1;
-	nS = 5;
-
 	struct VE
 	{
 		int v;

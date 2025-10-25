@@ -5,10 +5,9 @@
 class Digraph : public Graph
 {
 public:
-	// quelle, senke
-	int nQ;
-	int nS;
+	Digraph();
 
+public:
 	bool DoMaxFlowMinCut();
 	bool EdmondsKarpAlg();
 

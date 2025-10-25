@@ -56,6 +56,8 @@ public:
 	int nQ;
 	int nS;
 
+	void SetQandS(int q, int s) { nQ = q; nS = s; }
+
 	void AddVertices(int* pVerts, int count);
 	void AddEdges(int* pEdges, int count);
 
@@ -71,6 +73,9 @@ public:
 	bool CheckKorollarDIRAC();
 	bool CheckTheoremCHVATAL();
 	bool DoHamiltonAlg();
+
+	// coloring
+	void DoGreedyAlg();
 
 	bool CreateWaysByDijkstra(int nStartEcke);
 
