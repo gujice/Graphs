@@ -17,9 +17,10 @@ void Graph::InitGraph()
 		Edmonds_Karp_WIKI2, // https://de.wikipedia.org/wiki/Algorithmus_von_Ford_und_Fulkerson
 		Edmonds_Karp_WIKI3,
 		Edmons_Karp_side242, // example, more steps
-		BIPARTIT_4X4 
+		BIPARTIT_4X4, 
+		BIPARTIT_4X4_other_numbering 
 	} 
-	GraphSamples = UNGARIAN_ALG_S;
+	GraphSamples = BIPARTIT_4X4_other_numbering;
 
 	switch (GraphSamples)
 	{
@@ -360,6 +361,35 @@ void Graph::InitGraph()
 				{46, Edge(4, 6, 1) },
 				{47, Edge(4, 7, 1) },
 				{48, Edge(4, 8, 1) }
+			};
+		}
+		break;
+		// bipartit 4 x 4, numbering up, down...
+		case BIPARTIT_4X4_other_numbering:
+		{
+			int V[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+			int E[] = { 12, 14, 16, 18, 32, 34, 36, 38, 52, 54, 56, 58, 72, 74, 76, 78 };
+
+			AddVertices(V, sizeof(V) / sizeof(V[0]));
+			AddEdges(E, sizeof(E) / sizeof(E[0]));
+
+			m_mpDelta = {
+				// {12, Edge(1, 2, 1) },
+				{14, Edge(1, 4, 1) },
+				{16, Edge(1, 6, 1) },
+				{18, Edge(1, 8, 1) },
+				{32, Edge(3, 2, 1) },
+				// {34, Edge(3, 4, 1) },
+				{36, Edge(3, 6, 1) },
+				{38, Edge(3, 8, 1) },
+				{52, Edge(5, 2, 1) },
+				{54, Edge(5, 4, 1) },
+				// {56, Edge(5, 6, 1) },
+				{58, Edge(5, 8, 1) },
+				{72, Edge(7, 2, 1) },
+				{74, Edge(7, 4, 1) },
+				{76, Edge(7, 6, 1) },
+				// {78, Edge(7, 8, 1) }
 			};
 		}
 		break;
