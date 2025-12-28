@@ -2,8 +2,8 @@
 
 int main()
 {
-	Graph g;
-	g.Init();
+	Graph graph;
+	graph.Init();
 
 	/*
 	Digraph d;
@@ -21,10 +21,10 @@ int main()
 	graph.CheckKorollarORE();
 	graph.CheckKorollarDIRAC();
 	graph.CheckTheoremCHVATAL();
-	graph.DoHamiltonAlg();
-	*/
 
 	g.DoGreedyAlg();
+	*/
+	graph.DoHamiltonAlg();
 
 	return 0;
 }

@@ -20,7 +20,7 @@ void Graph::InitGraph()
 		BIPARTIT_4X4, 
 		BIPARTIT_4X4_other_numbering 
 	} 
-	GraphSamples = BIPARTIT_4X4_other_numbering;
+	GraphSamples = HAMILTON_page_151; //  BIPARTIT_4X4_other_numbering;
 
 	switch (GraphSamples)
 	{
